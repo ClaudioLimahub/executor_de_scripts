@@ -13,13 +13,13 @@ class Application(tk.Tk):
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
         # Define o caminho da imagem para o fundo da aplicação
-        self.background_image_path = os.path.join(script_dir, "imagem_de_fundo/The Eras Tour.jpg")
+        self.background_image_path = os.path.join(script_dir, "Sua imagem de fundo.jpg")
 
-        self.title("Automação de dados - Taylor Swift")
+        self.title("Seu título da interface")
         self.configure(background='white')
 
         # Define o ícone da aplicação
-        icon_path = os.path.join(script_dir, "imagem_de_fundo/icone_ts.png")  # Atualize o caminho para sua imagem
+        icon_path = os.path.join(script_dir, "Seu ícone.png")  # Atualize o caminho para sua imagem
         if os.path.exists(icon_path):
             self.icon_photo = tk.PhotoImage(file=icon_path)
             self.iconphoto(False, self.icon_photo)
@@ -42,14 +42,14 @@ class Application(tk.Tk):
         self.canvas.create_window(20, 20, anchor="nw", window=self.button_frame_left)  # Posição do frame da esquerda
 
         # Título do frame da esquerda
-        self.title_left = tk.Label(self.button_frame_left, text="Automações DB", bg='white', font=('Helvetica', 14, 'bold'))
+        self.title_left = tk.Label(self.button_frame_left, text="Insira o nome da sua seção aqui", bg='white', font=('Helvetica', 14, 'bold'))
         self.title_left.pack(pady=10)
 
         # Scripts para o frame da esquerda
         self.scripts_left = {
-            "Songs": os.path.join(script_dir, "RPA/ts_web_db_songs/ts_web_db_songs.py"),
-            "Albums": os.path.join(script_dir, "RPA/ts_web_db_albums/ts_web_db_albums.py"),
-            "Youtube": os.path.join(script_dir, "RPA/ts_web_db_youtube/yt_ts.py"),
+            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
+            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
+            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
             # Adicione mais scripts conforme necessário
         }
         self.create_buttons(self.button_frame_left, self.scripts_left)
@@ -59,14 +59,14 @@ class Application(tk.Tk):
         self.canvas.create_window(1330, 20, anchor="nw", window=self.button_frame_right)  # Posição do frame da direita
 
         # Título do frame da direita
-        self.title_right = tk.Label(self.button_frame_right, text="Automações Excel", bg='white', font=('Helvetica', 14, 'bold'))
+        self.title_right = tk.Label(self.button_frame_right, text="Insira o nome da sua seção aqui", bg='white', font=('Helvetica', 14, 'bold'))
         self.title_right.pack(pady=10)
 
         # Scripts para o frame da direita
         self.scripts_right = {
-            "Songs": os.path.join(script_dir, "RPA/ts_web_db_songs/ts_web_excel_songs.py"),
-            "Albums": os.path.join(script_dir, "RPA/ts_web_db_albums/ts_web_excel_albums.py"),
-            "Youtube": os.path.join(script_dir, "RPA/ts_web_db_youtube/Excel-yt_ts.py"),
+            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
+            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
+            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
         }
         self.create_buttons(self.button_frame_right, self.scripts_right)
 
