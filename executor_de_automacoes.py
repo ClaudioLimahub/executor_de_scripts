@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import subprocess
 import os
 import emoji
+import time
 
 class Application(tk.Tk):
     def __init__(self):
@@ -13,13 +14,13 @@ class Application(tk.Tk):
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
         # Define o caminho da imagem para o fundo da aplicação
-        self.background_image_path = os.path.join(script_dir, "Sua imagem de fundo.jpg")
+        self.background_image_path = os.path.join(script_dir, "imagem_de_fundo/The Eras Tour.jpg")
 
-        self.title("Seu título da interface")
+        self.title("Automação de dados - Taylor Swift")
         self.configure(background='white')
 
         # Define o ícone da aplicação
-        icon_path = os.path.join(script_dir, "Seu ícone.png")  # Atualize o caminho para sua imagem
+        icon_path = os.path.join(script_dir, "imagem_de_fundo/icone_ts.png")  # Atualize o caminho para sua imagem
         if os.path.exists(icon_path):
             self.icon_photo = tk.PhotoImage(file=icon_path)
             self.iconphoto(False, self.icon_photo)
@@ -42,14 +43,15 @@ class Application(tk.Tk):
         self.canvas.create_window(20, 20, anchor="nw", window=self.button_frame_left)  # Posição do frame da esquerda
 
         # Título do frame da esquerda
-        self.title_left = tk.Label(self.button_frame_left, text="Insira o nome da sua seção aqui", bg='white', font=('Helvetica', 14, 'bold'))
+        self.title_left = tk.Label(self.button_frame_left, text="Automações DB", bg='white', font=('Helvetica', 14, 'bold'))
         self.title_left.pack(pady=10)
 
         # Scripts para o frame da esquerda
         self.scripts_left = {
-            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
-            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
-            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
+            "Songs": os.path.join(script_dir, "RPA/Taylor Swift/ts_web_db_songs/ts_web_db_songs.py"),
+            "Albums": os.path.join(script_dir, "RPA/Taylor Swift/ts_web_db_albums/ts_web_db_albums.py"),
+            "Youtube": os.path.join(script_dir, "RPA/Taylor Swift/ts_web_db_youtube/yt_ts.py"),
+            "Dashboard": os.path.join(script_dir, "update_publish_powerbi.py"),
             # Adicione mais scripts conforme necessário
         }
         self.create_buttons(self.button_frame_left, self.scripts_left)
@@ -59,22 +61,30 @@ class Application(tk.Tk):
         self.canvas.create_window(1330, 20, anchor="nw", window=self.button_frame_right)  # Posição do frame da direita
 
         # Título do frame da direita
-        self.title_right = tk.Label(self.button_frame_right, text="Insira o nome da sua seção aqui", bg='white', font=('Helvetica', 14, 'bold'))
+        self.title_right = tk.Label(self.button_frame_right, text="Automações Excel", bg='white', font=('Helvetica', 14, 'bold'))
         self.title_right.pack(pady=10)
 
         # Scripts para o frame da direita
         self.scripts_right = {
-            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
-            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
-            "Nome do botão": os.path.join(script_dir, "seu_script.py"),
+            "Songs": os.path.join(script_dir, "RPA/Taylor Swift/ts_web_db_songs/ts_web_excel_songs.py"),
+            "Albums": os.path.join(script_dir, "RPA/Taylor Swift/ts_web_db_albums/ts_web_excel_albums.py"),
+            "Youtube": os.path.join(script_dir, "RPA/Taylor Swift/ts_web_db_youtube/Excel-yt_ts.py"),
         }
         self.create_buttons(self.button_frame_right, self.scripts_right)
 
+        # Botão "Executar todas as automações" com quebra de linha
+        self.run_all_button = tk.Button(self.canvas, text="Executar\n todas as automações", 
+                                        command=self.run_all_automations, bg='#ADD8E6', bd=0, 
+                                        relief='solid', font=('Helvetica', 12, 'bold'), 
+                                        fg='black', padx=10, pady=10, activebackground='#87CEEB', 
+                                        width=15, height=2)
+        self.canvas.create_window(20, 590, anchor="nw", window=self.run_all_button)  # Botão 10cm acima do botão Fechar
+
         # Botão para fechar a aplicação
         self.close_button = tk.Button(self.canvas, text=emoji.emojize(":snake: Fechar", variant="emoji_type"), 
-                                       command=self.confirm_close, bg='#ADD8E6', bd=0, relief='solid', 
-                                       font=('Helvetica', 12, 'bold'), fg='black', padx=10, pady=10, 
-                                       activebackground='#87CEEB', width=15, height=2)
+                                      command=self.confirm_close, bg='#ADD8E6', bd=0, relief='solid', 
+                                      font=('Helvetica', 12, 'bold'), fg='black', padx=10, pady=10, 
+                                      activebackground='#87CEEB', width=15, height=2)
         self.canvas.create_window(20, 700, anchor="nw", window=self.close_button)  # Ajuste a posição aqui
 
         # Bloquear o botão de fechar da janela do Windows
@@ -143,6 +153,24 @@ class Application(tk.Tk):
     def on_closing(self):
         # Intercepta a ação de fechar a janela do Windows
         self.confirm_close()
+
+    def run_all_automations(self):
+        """Executa todas as automações em sequência com atraso entre elas."""
+        all_scripts = list(self.scripts_left.values()) + list(self.scripts_right.values())
+        for script_file in all_scripts:
+            try:
+                if os.path.exists(script_file):
+                    subprocess.run(["python", script_file], check=True)
+                    time.sleep(7)  # Espera de 7 segundos entre as execuções
+                else:
+                    self.show_error_message(f"O arquivo {script_file} não foi encontrado.")
+                    return  # Se um script falhar, interrompe a execução de todos
+            except subprocess.CalledProcessError as e:
+                self.show_error_message(f"Erro ao executar {script_file}: {str(e)}")
+                return  # Interrompe a execução se um script falhar
+        # Se todos os scripts forem executados com sucesso
+        messagebox.showinfo("Sucesso", "Finalizado com sucesso!")
+        self.after(3000, self.confirm_close)  # Aguarda 3 segundos e fecha o app
 
 if __name__ == "__main__":
     app = Application()
